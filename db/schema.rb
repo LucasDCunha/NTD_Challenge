@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_29_200945) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_29_201529) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -43,6 +43,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_29_200945) do
     t.integer "category"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "category"], name: "index_user_category_unique", unique: true
     t.index ["user_id"], name: "index_user_category_subscriptions_on_user_id"
   end
 
@@ -51,6 +52,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_29_200945) do
     t.integer "channel"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "channel"], name: "index_user_channel_unique", unique: true
     t.index ["user_id"], name: "index_user_channel_preferences_on_user_id"
   end
 
