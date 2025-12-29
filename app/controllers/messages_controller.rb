@@ -1,21 +1,38 @@
 class MessagesController < ApplicationController
   def create
-    message = Messages::CreateAndDispatch.new(
-      category: message_params[:category],
-      body: message_params[:body]
+    @message = Message.new(message_params)
+
+    # Isso valida com os mesmos validators do model (antes de chamar o service)
+    if @message.invalid?
+      load_dashboard
+      return render "dashboard/index", status: :unprocessable_entity
+    end
+
+    Messages::CreateAndDispatch.new(
+      category: @message.category,
+      body: @message.body
     ).call
 
-    redirect_to root_path, notice: "Message created (##{message.id}) and notifications dispatched."
-  rescue ActiveRecord::RecordInvalid => e
-    redirect_to root_path, alert: e.record.errors.full_messages.to_sentence
+    redirect_to root_path, notice: "Message sent and notifications dispatched."
   rescue StandardError => e
-    # Fault-tolerance: se der erro inesperado, mostra algo genérico
-    redirect_to root_path, alert: "Unexpected error while dispatching: #{e.message}"
+    @message ||= Message.new(message_params)
+    @message.errors.add(:base, "Unexpected error while dispatching: #{e.message}")
+
+    load_dashboard
+    render "dashboard/index", status: :unprocessable_entity
   end
 
   private
 
   def message_params
     params.require(:message).permit(:category, :body)
+  end
+
+  def load_dashboard
+    @categories = Message.categories.keys
+    @notification_logs = NotificationLog
+      .includes(:user, :message)
+      .order(created_at: :desc)
+      .limit(200)
   end
 end

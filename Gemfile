@@ -57,3 +57,10 @@ group :test do
 end
 
 gem "psych", "~> 4.0"
+
+gem "bootstrap"
+
+gem "sassc-rails"
+
+gem "kaminari"
+gem "kaminari-bootstrap"
