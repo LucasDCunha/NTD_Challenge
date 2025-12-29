@@ -47,6 +47,7 @@ This project was developed as part of a technical challenge, with strong emphasi
 ### Step 1: Clone the repository
 
 git clone https://github.com/LucasDCunha/NTD_Challenge
+
 cd NTG_Challenge
 
 ### Step 2: Install dependencies
