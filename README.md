@@ -36,74 +36,6 @@ This project was developed as part of a technical challenge, with strong emphasi
 
 ---
 
-## Architecture Overview
-
-The application follows a service-oriented architecture. Controllers are intentionally thin and delegate business logic to service objects.
-
-Core structure:
-
-app/
-├─ controllers/
-│ ├─ dashboard_controller.rb
-│ └─ messages_controller.rb
-│
-├─ services/
-│ ├─ messages/
-│ │ └─ create_and_dispatch.rb
-│ │
-│ └─ notifications/
-│ ├─ dispatcher.rb
-│ ├─ recipients_resolver.rb
-│ ├─ sender_factory.rb
-│ └─ senders/
-│ ├─ base_sender.rb
-│ ├─ sms_sender.rb
-│ ├─ email_sender.rb
-│ └─ push_sender.rb
-│
-├─ models/
-│ ├─ user.rb
-│ ├─ message.rb
-│ ├─ notification_log.rb
-│ ├─ user_category_subscription.rb
-│ └─ user_channel_preference.rb
-
-
-Design patterns applied:
-
-- Strategy Pattern  
-  Each notification channel implements its own sender class with independent delivery logic.
-
-- Factory Pattern  
-  A sender factory selects the appropriate sender based on the notification channel.
-
-- Service Objects  
-  Core business logic (message creation, recipient resolution, dispatching) lives outside controllers.
-
----
-
-## User Interface
-
-The application exposes two main UI components:
-
-1. Message Submission Form  
-   - Category selection
-   - Message body input
-   - Inline validation errors
-   - Submission triggers message creation and notification dispatch
-
-2. Notification Log History  
-   - Sorted from newest to oldest
-   - Server-side filters:
-     - Category
-     - Channel
-     - Status
-     - User search (name, email, or ID)
-   - Pagination using Kaminari
-   - Visual status indicators using Bootstrap badges
-
----
-
 ## Running the Application Locally
 
 ### Requirements
@@ -114,21 +46,32 @@ The application exposes two main UI components:
 
 ### Step 1: Clone the repository
 
-```bash
-git clone <repository-url>
+git clone https://github.com/LucasDCunha/NTD_Challenge
 cd NTG_Challenge
 
-### Step 1: Install dependencies
+### Step 2: Install dependencies
 
 bundle install
+
+### Step 3: Configure the database
+
 rails db:create
+
 rails db:migrate
+
 rails db:seed
+
+### Step 4: Start the server
+
 rails s
+
+### Step 5: Open localhost
+
 http://localhost:3000
 
+---
 
-Possible Improvements
+## Possible Improvements
 
 Background job processing for async delivery (e.g., Sidekiq)
 
