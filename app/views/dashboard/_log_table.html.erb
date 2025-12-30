@@ -5,9 +5,10 @@
 
             <div class="d-flex gap-2">
                 <span class="badge bg-light text-dark border">Newest first</span>
-                <%= link_to "Send a message", new_message_path, class: "btn btn-outline-primary btn-sm" %>
             </div>
         </div>
+
+        <%= turbo_stream_from "notification_logs" %>
 
         <div class="table-responsive">
             <table class="table table-striped table-hover align-middle mb-0">
@@ -23,9 +24,9 @@
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="notification_logs_rows">
                     <% if notification_logs.empty? %>
-                    <tr>
+                    <tr id="notification_logs_empty_state">
                         <td colspan="7" class="text-center text-muted py-5">
                             <div class="fw-semibold mb-1">No logs found</div>
                             <div class="small">Try adjusting filters or send a message to generate notification records.</div>
@@ -33,67 +34,7 @@
                     </tr>
                     <% end %>
 
-                    <% notification_logs.each do |log| %>
-                    <% status_badge =
-              case log.status
-              when "sent" then "bg-success"
-              when "failed" then "bg-danger"
-              when "pending" then "bg-secondary"
-              when "skipped" then "bg-warning text-dark"
-              else "bg-light text-dark"
-              end
-            %>
-
-                    <% channel_badge =
-              case log.channel
-              when "sms" then "bg-info text-dark"
-              when "email" then "bg-primary"
-              when "push" then "bg-dark"
-              else "bg-light text-dark"
-              end
-            %>
-
-                    <tr>
-                        <td class="text-nowrap"><%= log.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
-
-                        <td class="text-nowrap">
-                            <div class="fw-semibold"><%= log.user&.name %></div>
-                            <div class="text-muted small">User ID: <%= log.user_id %></div>
-                        </td>
-
-                        <td class="text-nowrap">
-                            <span class="badge bg-light text-dark border">
-                                <%= log.message&.category&.titleize %>
-                            </span>
-                        </td>
-
-                        <td class="text-nowrap">
-                            <span class="badge <%= channel_badge %>"><%= log.channel.upcase %></span>
-                        </td>
-
-                        <td class="text-nowrap">
-                            <span class="badge <%= status_badge %>"><%= log.status.upcase %></span>
-                        </td>
-
-                        <td class="text-nowrap">
-                            <% if log.delivered_at.present? %>
-                            <%= log.delivered_at.strftime("%Y-%m-%d %H:%M:%S") %>
-                            <% else %>
-                            <span class="text-muted">—</span>
-                            <% end %>
-                        </td>
-
-                        <td style="max-width: 420px;">
-                            <% if log.error_message.present? %>
-                            <div class="alert alert-danger py-1 px-2 mb-0 small">
-                                <%= log.error_message %>
-                            </div>
-                            <% else %>
-                            <span class="text-muted small">No errors</span>
-                            <% end %>
-                        </td>
-                    </tr>
-                    <% end %>
+                    <%= render partial: "dashboard/log_row", collection: notification_logs, as: :log %>
                 </tbody>
             </table>
         </div>

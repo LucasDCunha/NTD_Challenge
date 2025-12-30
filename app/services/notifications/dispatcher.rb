@@ -43,11 +43,15 @@ module Notifications
         delivered_at: Time.current,
         error_message: nil
       )
+
+      Notifications::LogBroadcaster.append(log)
     rescue StandardError => e
       log&.update!(
         status: :failed,
         error_message: e.message
       )
+
+      Notifications::LogBroadcaster.append(log) if log.present?
     end
   end
 end

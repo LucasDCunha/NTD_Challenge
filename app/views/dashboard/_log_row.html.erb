@@ -1,0 +1,59 @@
+<% status_badge =
+  case log.status
+  when "sent" then "bg-success"
+  when "failed" then "bg-danger"
+  when "pending" then "bg-secondary"
+  when "skipped" then "bg-warning text-dark"
+  else "bg-light text-dark"
+  end
+%>
+
+<% channel_badge =
+  case log.channel
+  when "sms" then "bg-info text-dark"
+  when "email" then "bg-primary"
+  when "push" then "bg-dark"
+  else "bg-light text-dark"
+  end
+%>
+
+<tr id="<%= dom_id(log) %>">
+    <td class="text-nowrap"><%= log.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+
+    <td class="text-nowrap">
+        <div class="fw-semibold"><%= log.user&.name %></div>
+        <div class="text-muted small">User ID: <%= log.user_id %></div>
+    </td>
+
+    <td class="text-nowrap">
+        <span class="badge bg-light text-dark border">
+            <%= log.message&.category&.titleize %>
+        </span>
+    </td>
+
+    <td class="text-nowrap">
+        <span class="badge <%= channel_badge %>"><%= log.channel.upcase %></span>
+    </td>
+
+    <td class="text-nowrap">
+        <span class="badge <%= status_badge %>"><%= log.status.upcase %></span>
+    </td>
+
+    <td class="text-nowrap">
+        <% if log.delivered_at.present? %>
+        <%= log.delivered_at.strftime("%Y-%m-%d %H:%M:%S") %>
+        <% else %>
+        <span class="text-muted">—</span>
+        <% end %>
+    </td>
+
+    <td style="max-width: 420px;">
+        <% if log.error_message.present? %>
+        <div class="alert alert-danger py-1 px-2 mb-0 small">
+            <%= log.error_message %>
+        </div>
+        <% else %>
+        <span class="text-muted small">No errors</span>
+        <% end %>
+    </td>
+</tr>
