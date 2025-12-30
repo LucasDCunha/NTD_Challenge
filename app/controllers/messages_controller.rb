@@ -24,13 +24,11 @@ class MessagesController < ApplicationController
       body: @message.body
     ).call
 
-    flash.now[:notice] = "Message sent and notifications dispatched."
-    @message = Message.new
     load_form_context
 
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to root_path, notice: "Message sent and notifications dispatched." }
+      format.html { redirect_to root_path, notice: { status: "Message sent and notifications dispatched.", category: @message.category, body: @message.body } }
     end
   rescue ActiveRecord::RecordInvalid => e
     @message ||= Message.new(message_params)

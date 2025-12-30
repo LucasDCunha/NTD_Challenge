@@ -1,24 +1,54 @@
-<% if notice.present? %>
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 11" data-controller="flash">
-    <div class="alert alert-dismissible fade show toast border border-success" role="alert" data-bs-delay="3000">
+<% if notice.present? && notice.is_a?(Hash) %>
+<% category = notice["category"].to_s.downcase %>
+
+<% category_ui =
+    case category
+    when "sports"
+      { border: "border-primary", text: "text-primary", bg: "bg-primary-subtle" }
+    when "finance"
+      { border: "border-warning", text: "text-warning", bg: "bg-warning-subtle" }
+    when "movies"
+      { border: "border-secondary", text: "text-secondary", bg: "bg-secondary-subtle" }
+    else
+      { border: "border-dark", text: "text-dark", bg: "bg-light" }
+    end
+  %>
+
+<div class="position-fixed top-0 start-0 p-3" style="z-index: 1080;">
+    <div class="alert alert-dismissible fade show toast border border-success" role="alert" data-auto-dismiss-ms="3000">
         <div class="toast-header">
             <strong class="me-auto text-success">SUCCESS</strong>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+
         <div class="toast-body">
-            <%= notice %>
+            <%= notice["status"] %>
+        </div>
+    </div>
+</div>
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+    <div class="alert alert-dismissible fade show toast border <%= category_ui[:border] %> <%= category_ui[:bg] %>" role="alert" data-auto-dismiss-ms="5000">
+        <div class="toast-header <%= category_ui[:bg] %>">
+            <strong class="me-auto <%= category_ui[:text] %>"><%= category.titleize %></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body <%= category_ui[:text] %>">
+            <%= notice["body"] %>
         </div>
     </div>
 </div>
 <% end %>
 
 <% if alert.present? %>
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 11" data-controller="flash">
-    <div class="alert alert-danger alert-dismissible fade show toast border border-danger" role="alert" data-bs-delay="3000" data-bs-autohide="true">
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+    <div class="alert alert-danger alert-dismissible fade show toast border border-danger" role="alert" data-auto-dismiss-ms="7000">
         <div class="toast-header">
             <strong class="me-auto text-danger">ERROR</strong>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+
         <div class="toast-body">
             <%= alert %>
         </div>
@@ -27,11 +57,33 @@
 <% end %>
 
 <script>
-    setTimeout(() => {
-        document.querySelectorAll(".alert").forEach(el => {
-            el.classList.remove("show")
-            el.classList.add("fade")
-            setTimeout(() => el.remove(), 300)
-        })
-    }, 3000)
+    (function() {
+        function initAutoDismiss() {
+            document.querySelectorAll(".alert[data-auto-dismiss-ms]").forEach((el) => {
+                if (el.dataset.autoDismissBound === "true") return
+                el.dataset.autoDismissBound = "true"
+
+                const delayAttr = el.getAttribute("data-auto-dismiss-ms")
+                const delay = Number.parseInt(delayAttr, 10) || 3000
+
+                setTimeout(() => {
+                    if (window.bootstrap && window.bootstrap.Alert) {
+                        try {
+                            window.bootstrap.Alert.getOrCreateInstance(el).close()
+                            return
+                        } catch (e) {
+                            console.error("Bootstrap Alert close failed:", e)
+                        }
+                    }
+
+                    el.classList.remove("show")
+                    setTimeout(() => el.remove(), 300)
+                }, delay)
+            })
+        }
+
+        document.addEventListener("DOMContentLoaded", initAutoDismiss)
+        document.addEventListener("turbo:load", initAutoDismiss)
+        document.addEventListener("turbo:render", initAutoDismiss)
+    })()
 </script>
