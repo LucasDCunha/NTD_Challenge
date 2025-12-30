@@ -6,5 +6,13 @@ class Message < ApplicationRecord
   }
 
   validates :category, presence: true
-  validates :body, presence: true
+  validate :body_must_be_present
+
+  private
+
+  def body_must_be_present
+    return if body.to_s.strip.present?
+
+    errors.add(:body, "cannot be blank")
+  end
 end

@@ -1,6 +1,7 @@
 class MessagesController < ApplicationController
   def create
     @message = Message.new(message_params)
+    @message.body = @message.body.to_s.strip
 
     if @message.invalid?
       load_dashboard
@@ -15,6 +16,7 @@ class MessagesController < ApplicationController
     redirect_to root_path, notice: "Message sent and notifications dispatched."
   rescue StandardError => e
     @message ||= Message.new(message_params)
+    @message.body = @message.body.to_s.strip
     @message.errors.add(:base, "Unexpected error while dispatching: #{e.message}")
 
     load_dashboard
@@ -29,9 +31,13 @@ class MessagesController < ApplicationController
 
   def load_dashboard
     @categories = Message.categories.keys
+    @channels = NotificationLog.channels.keys
+    @statuses = NotificationLog.statuses.keys
+
     @notification_logs = NotificationLog
       .includes(:user, :message)
       .order(created_at: :desc)
-      .limit(200)
+      .page(params[:page])
+      .per(DashboardController::PER_PAGE)
   end
 end
