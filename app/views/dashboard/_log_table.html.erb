@@ -1,54 +1,12 @@
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-body p-4">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <h2 class="h5 mb-0">Log filters</h2>
-            <span class="badge bg-light text-dark border">Server-side</span>
-        </div>
-
-        <%= form_with url: root_path, method: :get, local: true do %>
-        <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-3">
-                <label class="form-label">Category</label>
-                <%= select_tag :category,
-                  options_for_select([["All", ""]] + @categories.map { |c| [c.titleize, c] }, params[:category]),
-                  class: "form-select" %>
-            </div>
-
-            <div class="col-12 col-md-3">
-                <label class="form-label">Channel</label>
-                <%= select_tag :channel,
-                  options_for_select([["All", ""]] + @channels.map { |c| [c.upcase, c] }, params[:channel]),
-                  class: "form-select" %>
-            </div>
-
-            <div class="col-12 col-md-3">
-                <label class="form-label">Status</label>
-                <%= select_tag :status,
-                  options_for_select([["All", ""]] + @statuses.map { |s| [s.titleize, s] }, params[:status]),
-                  class: "form-select" %>
-            </div>
-
-            <div class="col-12 col-md-3">
-                <label class="form-label">Search</label>
-                <%= text_field_tag :query, params[:query], class: "form-control", placeholder: "User name, email, or ID" %>
-            </div>
-
-            <div class="col-12 d-flex gap-2 justify-content-end">
-                <%= submit_tag "Apply filters", class: "btn btn-primary" %>
-                <%= link_to "Reset", root_path, class: "btn btn-outline-secondary" %>
-            </div>
-        </div>
-        <% end %>
-    </div>
-</div>
-
 <div class="card shadow-sm border-0">
     <div class="card-body p-4">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <h2 class="h5 mb-0">Log history</h2>
-            <span class="badge bg-light text-dark border">
-                Newest first
-            </span>
+
+            <div class="d-flex gap-2">
+                <span class="badge bg-light text-dark border">Newest first</span>
+                <%= link_to "Send a message", new_message_path, class: "btn btn-outline-primary btn-sm" %>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -77,28 +35,26 @@
 
                     <% notification_logs.each do |log| %>
                     <% status_badge =
-                    case log.status
-                    when "sent" then "bg-success"
-                    when "failed" then "bg-danger"
-                    when "pending" then "bg-secondary"
-                    when "skipped" then "bg-warning text-dark"
-                    else "bg-light text-dark"
-                    end
-                  %>
+              case log.status
+              when "sent" then "bg-success"
+              when "failed" then "bg-danger"
+              when "pending" then "bg-secondary"
+              when "skipped" then "bg-warning text-dark"
+              else "bg-light text-dark"
+              end
+            %>
 
                     <% channel_badge =
-                    case log.channel
-                    when "sms" then "bg-info text-dark"
-                    when "email" then "bg-primary"
-                    when "push" then "bg-dark"
-                    else "bg-light text-dark"
-                    end
-                  %>
+              case log.channel
+              when "sms" then "bg-info text-dark"
+              when "email" then "bg-primary"
+              when "push" then "bg-dark"
+              else "bg-light text-dark"
+              end
+            %>
 
                     <tr>
-                        <td class="text-nowrap">
-                            <%= log.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
-                        </td>
+                        <td class="text-nowrap"><%= log.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
 
                         <td class="text-nowrap">
                             <div class="fw-semibold"><%= log.user&.name %></div>
@@ -142,15 +98,6 @@
             </table>
         </div>
 
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 mt-3">
-            <div class="text-muted small">
-                Showing <strong><%= notification_logs.size %></strong> items on this page.
-                Total: <strong><%= notification_logs.total_count %></strong>.
-            </div>
-
-            <div>
-                <%= paginate notification_logs %>
-            </div>
-        </div>
+        <%= render "dashboard/pagination", notification_logs: notification_logs %>
     </div>
 </div>

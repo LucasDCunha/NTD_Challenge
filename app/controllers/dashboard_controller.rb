@@ -2,7 +2,6 @@ class DashboardController < ApplicationController
   PER_PAGE = 25
 
   def index
-    @message = Message.new
     @categories = Message.categories.keys
     @channels = NotificationLog.channels.keys
     @statuses = NotificationLog.statuses.keys

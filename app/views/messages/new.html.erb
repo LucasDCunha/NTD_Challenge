@@ -1,0 +1,82 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+                <div>
+                    <h1 class="h3 mb-1">Send a message</h1>
+                    <p class="text-muted mb-0">
+                        Submit a categorized message and dispatch notifications to subscribed users.
+                    </p>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <%= link_to "View logs", root_path, class: "btn btn-outline-primary" %>
+                </div>
+            </div>
+
+            <% if notice.present? %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= notice %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% end %>
+
+            <% if alert.present? %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= alert %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% end %>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h2 class="h5 mb-0">Message submission</h2>
+                        <span class="badge bg-light text-dark border">Form</span>
+                    </div>
+
+                    <%= form_with model: @message, url: messages_path, method: :post, html: { novalidate: true } do |f| %>
+                    <% if @message.errors.any? %>
+                    <div class="alert alert-danger mb-3" role="alert">
+                        <div class="fw-semibold mb-2">Please fix the errors below:</div>
+                        <ul class="mb-0 ps-3">
+                            <% @message.errors.full_messages.each do |msg| %>
+                            <li><%= msg %></li>
+                            <% end %>
+                        </ul>
+                    </div>
+                    <% end %>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <%= f.label :category, class: "form-label" %>
+                            <%= f.select :category,
+                             options_for_select(@categories.map { |c| [c.titleize, c] }, f.object.category),
+                             {},
+                             class: "form-select" %>
+                            <div class="form-text">Choose one of the available categories.</div>
+                        </div>
+
+                        <div class="col-12 col-md-8">
+                            <%= f.label :body, "Message", class: "form-label" %>
+                            <%= f.text_area :body,
+                                rows: 4,
+                                placeholder: "Type your message...",
+                                class: "form-control" %>
+                            <div class="form-text">Message body cannot be blank or whitespace-only.</div>
+                        </div>
+
+                        <div class="col-12 d-flex justify-content-end">
+                            <%= f.submit "Send and Dispatch", class: "btn btn-primary" %>
+                        </div>
+                    </div>
+                    <% end %>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
