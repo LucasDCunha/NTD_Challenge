@@ -5,7 +5,6 @@ module Messages
       @body = body
     end
 
-    # Retorna a Message criada (útil pro controller/UI)
     def call
       message = Message.create!(
         category: category,

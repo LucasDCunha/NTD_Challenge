@@ -2,7 +2,6 @@ class MessagesController < ApplicationController
   def create
     @message = Message.new(message_params)
 
-    # Isso valida com os mesmos validators do model (antes de chamar o service)
     if @message.invalid?
       load_dashboard
       return render "dashboard/index", status: :unprocessable_entity

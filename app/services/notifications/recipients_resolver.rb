@@ -4,7 +4,6 @@ module Notifications
       @category = category
     end
 
-    # Returns: ActiveRecord::Relation<User>
     def call
       User
         .joins(:user_category_subscriptions)
@@ -16,7 +15,6 @@ module Notifications
 
     attr_reader :category
 
-    # Accepts either Symbol/String ("sports") or Integer (0)
     def category_value
       return category if category.is_a?(Integer)
 

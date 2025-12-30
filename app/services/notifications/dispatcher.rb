@@ -4,8 +4,6 @@ module Notifications
       @message = message
     end
 
-    # Cria logs por user x channel e tenta enviar.
-    # Falha em um canal NÃO para os demais (fault tolerance).
     def call
       recipients.find_each do |user|
         channels_for(user).each do |channel|
@@ -24,7 +22,6 @@ module Notifications
 
     def channels_for(user)
       user.user_channel_preferences.pluck(:channel).map do |raw|
-        # raw pode vir como Integer (enum) ou String dependendo do contexto
         raw.is_a?(Integer) ? UserChannelPreference.channels.key(raw) : raw.to_s
       end
     end

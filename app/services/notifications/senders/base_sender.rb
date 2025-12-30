@@ -1,7 +1,6 @@
 module Notifications
   module Senders
     class BaseSender
-      # Must return true on success, raise on failure.
       def send!(user:, message:)
         raise NotImplementedError, "#{self.class} must implement #send!"
       end
