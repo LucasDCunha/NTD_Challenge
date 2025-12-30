@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "message_form" do %>
+  <%= render "form", message: @message, categories: @categories %>
+<% end %>
+
+<%= turbo_stream.replace "flash" do %>
+  <%= render "shared/flash" %>
+<% end %>

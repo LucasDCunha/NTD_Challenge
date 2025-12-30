@@ -10,7 +10,13 @@ class MessagesController < ApplicationController
 
     if @message.invalid?
       load_form_context
-      return render :new, status: :unprocessable_entity
+
+      respond_to do |format|
+        format.turbo_stream
+        format.html { render :new, status: :unprocessable_entity }
+      end
+
+      return
     end
 
     Messages::CreateAndDispatch.new(
@@ -18,21 +24,34 @@ class MessagesController < ApplicationController
       body: @message.body
     ).call
 
-    redirect_to root_path, notice: "Message sent and notifications dispatched."
+    flash.now[:notice] = "Message sent and notifications dispatched."
+    @message = Message.new
+    load_form_context
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to root_path, notice: "Message sent and notifications dispatched." }
+    end
   rescue ActiveRecord::RecordInvalid => e
     @message ||= Message.new(message_params)
     @message.body = @message.body.to_s.strip
     @message.errors.add(:base, e.record.errors.full_messages.to_sentence)
-
     load_form_context
-    render :new, status: :unprocessable_entity
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :new, status: :unprocessable_entity }
+    end
   rescue StandardError => e
     @message ||= Message.new(message_params)
     @message.body = @message.body.to_s.strip
     @message.errors.add(:base, "Unexpected error while dispatching: #{e.message}")
-
     load_form_context
-    render :new, status: :unprocessable_entity
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :new, status: :unprocessable_entity }
+    end
   end
 
   private
