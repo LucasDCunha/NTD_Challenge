@@ -1,13 +1,27 @@
 <% if notice.present? %>
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <%= notice %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 11" data-controller="flash">
+    <div class="alert alert-dismissible fade show toast border border-success" role="alert" data-bs-delay="3000">
+        <div class="toast-header">
+            <strong class="me-auto text-success">SUCCESS</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <%= notice %>
+        </div>
+    </div>
 </div>
 <% end %>
 
 <% if alert.present? %>
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <%= alert %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 11" data-controller="flash">
+    <div class="alert alert-danger alert-dismissible fade show toast border border-danger" role="alert" data-bs-delay="3000" data-bs-autohide="true">
+        <div class="toast-header">
+            <strong class="me-auto text-danger">ERROR</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <%= alert %>
+        </div>
+    </div>
 </div>
 <% end %>
