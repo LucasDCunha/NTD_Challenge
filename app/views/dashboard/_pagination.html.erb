@@ -5,6 +5,8 @@
     </div>
 
     <div>
-        <%= paginate notification_logs %>
+        <%= paginate notification_logs,
+                 params: request.query_parameters,
+                 link_options: { "data-turbo-frame": "logs_frame" } %>
     </div>
 </div>

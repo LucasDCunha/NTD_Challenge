@@ -16,8 +16,10 @@
             </div>
 
             <%= render "dashboard/log_filters", categories: @categories, channels: @channels, statuses: @statuses %>
-            <%= render "dashboard/log_table", notification_logs: @notification_logs %>
 
+            <turbo-frame id="logs_frame">
+                <%= render "dashboard/log_table", notification_logs: @notification_logs %>
+            </turbo-frame>
         </div>
     </div>
 </div>
