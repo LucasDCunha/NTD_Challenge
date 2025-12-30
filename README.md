@@ -70,6 +70,12 @@ rails s
 
 http://localhost:3000
 
+### Step 6: Run unit tests
+
+rails db:test:prepare
+
+bundle exec rspec
+
 ---
 
 ## Possible Improvements
