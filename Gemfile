@@ -61,7 +61,7 @@ group :test do
   gem "factory_bot_rails"
 end
 
-gem "psych", "~> 4.0"
+gem "psych", "~> 5.3"
 
 gem "bootstrap"
 
