@@ -184,8 +184,8 @@ GEM
     parser (3.3.10.0)
       ast (~> 2.4.1)
       racc
-    pg (1.6.2-x64-mingw-ucrt)
-    pg (1.6.2-x86_64-linux)
+    pg (1.6.3-x64-mingw-ucrt)
+    pg (1.6.3-x86_64-linux)
     popper_js (2.11.8)
     pp (0.6.3)
       prettyprint
@@ -365,7 +365,7 @@ DEPENDENCIES
   jbuilder
   kaminari
   kaminari-bootstrap
-  pg (~> 1.1)
+  pg (~> 1.6)
   psych (~> 4.0)
   puma (>= 5.0)
   rails (~> 7.2.1)
